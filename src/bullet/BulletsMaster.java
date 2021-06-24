@@ -6,9 +6,7 @@ import java.util.Iterator;
 import org.lwjgl.util.vector.Vector3f;
 
 import enemy.Enemy;
-import enemy.EnemyInterface;
 import enemy.EnemyMaster;
-import entities.Entity;
 import entities.Player;
 import load.LoadMaster;
 
@@ -18,11 +16,12 @@ public class BulletsMaster {
 	
 	private static int hitScore;
 	
-	public static enum BULLET_TYPE{
-		DEFAULT,
-		FIRE_BALL,
-		GREEN_BALL,
-	}
+//	public static enum BULLET_TYPE{
+//		DEFAULT,
+//		FIRE_BALL,
+//		GREEN_BALL,
+//		MISSILE
+//	}
 	
 	public static enum BULLET_LABLE{
 		PLAYER,
@@ -51,12 +50,7 @@ public class BulletsMaster {
 		Iterator<Bullet> iterator = bullets.iterator();
 		while(iterator.hasNext()) {
 			Bullet b = iterator.next();
-			if(b.getType() == BULLET_TYPE.DEFAULT)
-				LoadMaster.renderer.processEntity(new Entity(LoadMaster.bullet_TexturedModel, b.getPosition(), -90, 0, 0, 1.5f, 1));
-			else if(b.getType() == BULLET_TYPE.FIRE_BALL)
-				LoadMaster.renderer.processEntity(new Entity(LoadMaster.plasmaBall_TexturedModel, b.getPosition(), 0, 0, 0, 0.4f, 1));
-			else if(b.getType() == BULLET_TYPE.GREEN_BALL)
-				LoadMaster.renderer.processEntity(new Entity(LoadMaster.plasmaBallGreen_TexturedModel, b.getPosition(), 0, 0, 0, 0.4f, 1));
+			LoadMaster.renderer.processEntity(b);
 		}
 	}
 	
@@ -84,9 +78,9 @@ public class BulletsMaster {
 	
 	private static void collisionTest(Bullet bullet) {
 		if(bullet.getLabel() == BULLET_LABLE.PLAYER) {
-			Iterator<EnemyInterface> iterator = EnemyMaster.getEnemiesList().iterator();
+			Iterator<Enemy> iterator = EnemyMaster.getEnemiesList().iterator();
 			while(iterator.hasNext()) {
-				Enemy enemy = iterator.next().getEnemyClass();
+				Enemy enemy = iterator.next();
 				Vector3f delta = new Vector3f();
 				Vector3f.sub(bullet.getPosition(), enemy.getPosition(), delta);
 				

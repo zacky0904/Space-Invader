@@ -3,48 +3,44 @@ package bullet;
 import org.lwjgl.util.vector.Vector3f;
 
 import bullet.BulletsMaster.BULLET_LABLE;
-import bullet.BulletsMaster.BULLET_TYPE;
-import renderEngine.DisplayManager;
+import entities.Entity;
+import models.TexturedModel;
 
-public class Bullet{
+public abstract class Bullet extends Entity{
 	
 	
-	private Vector3f position;
-	private Vector3f velocity;
-	private float speed;
-	private float lifeTime;
-	private BULLET_LABLE label;
-	private BULLET_TYPE type;
-	private float elapsedTime = 0;
-	private float damage = 10;
-	private Vector3f boundbox;
-	private boolean DISPOSED = false;
-
-	public Bullet( BULLET_LABLE label,BULLET_TYPE type , Vector3f position,  Vector3f velocity, float speed, float lifeTime) {
+	protected Vector3f velocity;
+	protected float speed;
+	protected float lifeTime;
+	protected BULLET_LABLE label;
+	protected float elapsedTime = 0;
+	protected float damage = 10;
+	protected Vector3f boundbox;
+	protected boolean disposed = false;
+	
+	public Bullet( TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale, BULLET_LABLE label, Vector3f velocity, float speed, float lifeTime, float brightness) {
+		super(model, position, rotX, rotY, rotZ, scale, brightness);
 		this.label = label;
-		this.type = type;
-		this.position = position;
-		this.velocity = velocity;
+		velocity.normalise();
+		this.velocity = new Vector3f(velocity);
 		this.speed = speed;
 		this.lifeTime = lifeTime;
+		boundbox = new Vector3f();
 		BulletsMaster.addBullet(this);
-		if(type == BULLET_TYPE.DEFAULT)
-			boundbox = new Vector3f(1,1,2);
-		if(type == BULLET_TYPE.FIRE_BALL)
-			boundbox = new Vector3f(1.4f,1.4f,1.4f);
-		if(type == BULLET_TYPE.GREEN_BALL)
-			boundbox = new Vector3f(1.4f,1.4f,1.4f);
+	}
 
+	public Bullet( TexturedModel model, Vector3f position, float rotX, float rotY, float rotZ, float scale, BULLET_LABLE label, Vector3f velocity, float speed, float lifeTime) {
+		super(model, position, rotX, rotY, rotZ, scale);
+		this.label = label;
+		velocity.normalise();
+		this.velocity = new Vector3f(velocity);
+		this.speed = speed;
+		this.lifeTime = lifeTime;
+		boundbox = new Vector3f();
+		BulletsMaster.addBullet(this);
 	}
 	
-	public boolean update() {
-		Vector3f vel = new Vector3f(velocity);
-		vel.normalise();
-		vel.scale(speed*DisplayManager.getFrameTime());
-		Vector3f.add(position, vel, position);
-		elapsedTime += DisplayManager.getFrameTime();
-		return (elapsedTime < lifeTime) && !DISPOSED;
-	}
+	public abstract boolean update();
 	
 	public Vector3f getPosition() {
 		return position;
@@ -69,6 +65,10 @@ public class Bullet{
 	public float getElapsedTime() {
 		return elapsedTime;
 	}
+	
+	public void setDamage(float damage) {
+		this.damage = damage;
+	}
 
 	public float getDamage() {
 		return damage;
@@ -83,15 +83,7 @@ public class Bullet{
 	}
 	
 	public void setDisposed(boolean flag) {
-		DISPOSED = flag;
+		disposed = flag;
 	}
-
-	public BULLET_TYPE getType() {
-		return type;
-	}
-	
-	
-
-	
 
 }

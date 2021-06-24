@@ -2,6 +2,7 @@ package load;
 
 
 import audio.AudioMaster;
+import audio.Source;
 import fontMeshCreator.FontType;
 import models.RawModel;
 import models.TexturedModel;
@@ -42,6 +43,12 @@ public class LoadMaster {
 	public static RawModel asteroid1_model;
 	public static TexturedModel asteroid1_TexturedModel;
 	
+	public static ModelData missile_data;
+	public static RawModel missile_model;
+	public static TexturedModel missile_TexturedModel;
+	
+	public static Source source;
+	
 	//GUI
 	
 	//Fonts
@@ -53,13 +60,16 @@ public class LoadMaster {
 	
 	public static int click_SE;
 	public static int bgMusic1;
+	public static int missileDrop_SE;
+	public static int missileFiring_SE;
+
 	
 	
 	
 	public static void load() {
 		renderer = new MasterRenderer(loader);
 		guiRenderer = new GuiRenderer(loader);
-		
+		source = new Source(0.1f);
 		player_data = OBJFileLoader.loadOBJ("SpaceShip");
 		player_model = loader.loadToVAO(player_data.getVertices(), player_data.getTextureCoords(), player_data.getNormals(), player_data.getIndices());
 		player_TexturedModel = new TexturedModel(player_model,new ModelTexture(loader.loadTexture("SpaceShip")));
@@ -80,6 +90,10 @@ public class LoadMaster {
 		plasmaBall_TexturedModel = new TexturedModel(plasmaBall_model,new ModelTexture(loader.loadTexture("PlasmaBall")));
 		plasmaBallGreen_TexturedModel =  new TexturedModel(plasmaBall_model,new ModelTexture(loader.loadTexture("PlasmaBallGreen")));
 		
+		missile_data = OBJFileLoader.loadOBJ("missile");
+		missile_model = loader.loadToVAO(missile_data.getVertices(), missile_data.getTextureCoords(), missile_data.getNormals(), missile_data.getIndices());
+		missile_TexturedModel = new TexturedModel(missile_model,new ModelTexture(loader.loadTexture("Red")));
+		
 		asteroid1_data = OBJFileLoader.loadOBJ("asteroid1");
 		asteroid1_model = loader.loadToVAO(asteroid1_data.getVertices(), asteroid1_data.getTextureCoords(), asteroid1_data.getNormals(), asteroid1_data.getIndices());
 		asteroid1_TexturedModel = new TexturedModel(asteroid1_model,new ModelTexture(loader.loadTexture("asteroid1")));
@@ -87,6 +101,8 @@ public class LoadMaster {
 
 		laser_SE = AudioMaster.loadSound("/audios/laser.wav");
 		explode_SE = AudioMaster.loadSound("/audios/explosion.wav");
+		missileDrop_SE = AudioMaster.loadSound("/audios/missileDrop.wav");
+		missileFiring_SE = AudioMaster.loadSound("/audios/missileFiring.wav");
 		
 		click_SE = AudioMaster.loadSound("/audios/click.wav");
 		bgMusic1 = AudioMaster.loadSound("/audios/Ascent_to_the_Station.wav");

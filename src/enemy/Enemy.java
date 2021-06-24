@@ -6,7 +6,7 @@ import entities.Entity;
 import models.TexturedModel;
 import renderEngine.DisplayManager;
 
-public class Enemy extends Entity {
+public abstract class Enemy extends Entity {
 	
 	private float durability = 15;
 	private int ID;
@@ -18,6 +18,8 @@ public class Enemy extends Entity {
 		super(model, position, rotX, rotY, rotZ, scale);
 		super.setBoundBox(2, 2, 2);
 	}
+	
+	public abstract boolean update();
 	
 	public void hitShrink() {
 		if(isHIT) {

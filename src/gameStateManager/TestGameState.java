@@ -102,6 +102,8 @@ public class TestGameState extends GameState {
 	private GuiTexture gui_pausedBackground;
 
 	private GUIText tx_end2;
+
+	private GUIText tx_missileCount;
 	
 	
 	public TestGameState(GameStateManager gsm) {
@@ -128,8 +130,11 @@ public class TestGameState extends GameState {
 		tx_score.setColour(1, 1, 1);
 		tx_durability = new GUIText("100 %", 2f, LoadMaster.FONT_Airstrike, new Vector2f(0.85f,0.9f), 1, false);
 		tx_durability.setColour(1, 1, 1);
+		tx_missileCount = new GUIText("M:", 2f, LoadMaster.FONT_Airstrike, new Vector2f(0.85f,0.85f), 1, false);
+		tx_missileCount.setColour(1, 1, 1);
 		textBundle_inGame.addText(tx_score);
 		textBundle_inGame.addText(tx_durability);
+		textBundle_inGame.addText(tx_missileCount);
 		textBundle_inGame.setVisible(false);
 	
 		tx_intro = new GUIText("ARCADE MODE", 2f, LoadMaster.FONT_Airstrike, new Vector2f(0f,0.5f), 1, true);
@@ -235,6 +240,7 @@ public class TestGameState extends GameState {
 		//gui text info
 		str_score = "SCORE: " + (int)score;
 		tx_score.setTextString(str_score);
+		tx_missileCount.setTextString("M: " + (int)player.getMissileCount());
 		tx_durability.setTextString(player.getDurability()+ " %");
 		
 		//keyboard update
@@ -297,12 +303,12 @@ public class TestGameState extends GameState {
 	//-----------------------------------TopViewMode_PROC-----------------------------------
 	private void TopViewMode_PROC() {
 		int totalScore = 0;
-		if(subScore >= 1500 && EnemyMaster.isEmpty())
+		if(subScore >= 3000 && EnemyMaster.isEmpty())
 			currentScenes = scenesState.TOP_PLAYER_POS_INIT;
 		if(EnemyMaster.isEmpty()) {
-			EnemySystem.gernerateEnemy1(8, -10);
-			EnemySystem.gernerateEnemy1Reverse(8, -5);
-			EnemySystem.gernerateEnemy1(8, 0);
+			EnemySystem.gernerateEnemy1(10, -10);
+			EnemySystem.gernerateEnemy1Reverse(10, -5);
+			EnemySystem.gernerateEnemy1(10, 0);
 		}
 
 //		if(Keyboard.isKeyDown(Keyboard.KEY_M)) {
@@ -338,13 +344,13 @@ public class TestGameState extends GameState {
 		subScore = 0;
 		boolean POSITION_FLAG = false;
 		boolean CAMERA_FLAG = false;
-		boolean WAIT_TIME_FLAG = false;
+//		boolean WAIT_TIME_FLAG = false;
 		player.setControlFlag(false);
 		BulletsMaster.cleanUp();
 		AsteroidMaster.cleanUp();
 		if(!EnemyMaster.getEnemiesList().isEmpty()) {
 			for(int i=0;i<EnemyMaster.getEnemiesList().size();i++) {
-				pe_explode.generateParticles(EnemyMaster.getEnemiesList().get(i).getEnemyClass().getPosition());
+				pe_explode.generateParticles(EnemyMaster.getEnemiesList().get(i).getPosition());
 				sourceSE.play(LoadMaster.explode_SE);
 				EnemyMaster.getEnemiesList().remove(i);
 			}
@@ -566,8 +572,7 @@ public class TestGameState extends GameState {
 			currentScenes =  lastScenes;
 			guis.remove(gui_pausedBackground);
 			paused_MS.setVisible(false);
-			tx_score.setVisible(true);
-			tx_durability.setVisible(true);
+			textBundle_inGame.setVisible(true);
 			sourceBG.resume();
 		}
 		if(returnValue == 2) {

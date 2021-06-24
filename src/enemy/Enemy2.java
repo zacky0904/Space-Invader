@@ -1,20 +1,17 @@
 package enemy;
 
-import java.util.Iterator;
-
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import bullet.Bullet;
 import bullet.BulletsMaster.BULLET_LABLE;
-import bullet.BulletsMaster.BULLET_TYPE;
+import bullet.PlasmaBall2;
+
 import load.LoadMaster;
-import models.TexturedModel;
+
 import renderEngine.DisplayManager;
 
-public class Enemy2 extends Enemy implements EnemyInterface{
+public class Enemy2 extends Enemy{
 	
-	private long shootStartTime = 0;
 	private float elapsed = 0;
 	
 	private float WarZoneLeft = -20;
@@ -60,7 +57,7 @@ public class Enemy2 extends Enemy implements EnemyInterface{
 			if(elapsed >= 3) {
 				for(int i=0; i<10;i++) {
 					float rad = (float) Math.toRadians(i*36);
-					new Bullet(BULLET_LABLE.ENEMY, BULLET_TYPE.GREEN_BALL, new Vector3f(super.getPosition()), new Vector3f((float)Math.sin(rad),0,(float)Math.cos(rad)),6, 4);
+					new PlasmaBall2(BULLET_LABLE.ENEMY, new Vector3f(super.getPosition()), new Vector3f((float)Math.sin(rad),0,(float)Math.cos(rad)),6, 5);
 				}
 				elapsed = 0;
 			}
@@ -97,11 +94,6 @@ public class Enemy2 extends Enemy implements EnemyInterface{
 				super.setRotZ(super.getRotZ()+dRoll*DisplayManager.getFrameTime());
 				
 		}
-	}
-
-	@Override
-	public Enemy getEnemyClass() {
-		return this;
 	}
 
 }

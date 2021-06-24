@@ -15,7 +15,7 @@ import particleSystem.ParticleSystem_Explode;
 
 
 public class EnemyMaster {
-	private static ArrayList<EnemyInterface> enemies = new ArrayList<EnemyInterface>();
+	private static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 
 	
 	private static ParticleSystem_Explode psExplode = new ParticleSystem_Explode(50,0.8f);
@@ -31,13 +31,13 @@ public class EnemyMaster {
 	
 	public static int update() {
 		killScore = 0;
-		Iterator<EnemyInterface> iterator = enemies.iterator();
+		Iterator<Enemy> iterator = enemies.iterator();
 		while(iterator.hasNext()) {
-			EnemyInterface e = iterator.next();
+			Enemy e = iterator.next();
 			boolean stillAlive = e.update();
-			collisionTest(e.getEnemyClass());
+			collisionTest(e);
 			if(!stillAlive) {
-				psExplode.generateParticles(e.getEnemyClass().getPosition());
+				psExplode.generateParticles(e.getPosition());
 				source.play(LoadMaster.explode_SE);
 				iterator.remove();
 				killScore++;
@@ -55,9 +55,9 @@ public class EnemyMaster {
 	}
 	
 	public static void renderEnemies() {
-		Iterator<EnemyInterface> iterator = enemies.iterator();
+		Iterator<Enemy> iterator = enemies.iterator();
 		while(iterator.hasNext()) {
-			Enemy e = iterator.next().getEnemyClass();
+			Enemy e = iterator.next();
 			LoadMaster.renderer.processEntity(e);
 		}
 	}
@@ -66,7 +66,7 @@ public class EnemyMaster {
 		enemies.clear();
 	}
 	
-	public static void addEnemy(EnemyInterface enemy) {
+	public static void addEnemy(Enemy enemy) {
 		enemies.add(enemy);
 	}
 	
@@ -74,7 +74,7 @@ public class EnemyMaster {
 		return enemies.isEmpty();
 	}
 	
-	public static ArrayList<EnemyInterface> getEnemiesList(){
+	public static ArrayList<Enemy> getEnemiesList(){
 		return enemies;
 	}
 	

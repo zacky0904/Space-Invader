@@ -6,7 +6,8 @@ import org.lwjgl.util.vector.Vector3f;
 import org.lwjgl.util.vector.Vector4f;
 
 import audio.Source;
-import bullet.Bullet;
+import bullet.Cannon;
+import bullet.Missile;
 import load.LoadMaster;
 import models.TexturedModel;
 import particles.Particle;
@@ -14,6 +15,8 @@ import renderEngine.DisplayManager;
 import bullet.BulletsMaster;
 
 public class Player extends Entity{
+	
+	private boolean KEY_Z_FLAG = false;
 	
 	public Vector3f position;
 	
@@ -42,6 +45,9 @@ public class Player extends Entity{
 	private float pitch;
 	private float roll;
 	
+	private float missileMax = 8;
+	private float missileCount = missileMax;
+	private float missileTimer = 0;
 	private boolean godMode = false;
 
 	private Source source;
@@ -97,20 +103,44 @@ public class Player extends Entity{
 	public void update() {
 		if(!CONTROL_DISABLE) {
 			move();
+			
+			//shoot cannon
 			if(Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 				elapsed += DisplayManager.getFrameTime();
-				if(godMode)
+				if(godMode) {
 					shootCoolDown = 0.01f;
+				}
 				else
-					shootCoolDown = 0.2f;
+					shootCoolDown = 0.1f;
 				if(elapsed >= shootCoolDown) {
 					source.play(LoadMaster.laser_SE);
-					new Bullet(BulletsMaster.BULLET_LABLE.PLAYER, BulletsMaster.BULLET_TYPE.DEFAULT, new Vector3f(position), new Vector3f(0,0,-1), 100, 1);
+					new Cannon(BulletsMaster.BULLET_LABLE.PLAYER, new Vector3f(position), new Vector3f(0,0,-1), 100, 1);
 					elapsed = 0;
 				}
 			}else {
-				elapsed = 0.2f;
+				elapsed = 0.1f;
 			}
+			
+			//launch missile
+			if(Keyboard.isKeyDown(Keyboard.KEY_Z) && !KEY_Z_FLAG) {
+				if(godMode)
+					missileCount = 8;
+				if(missileCount > 0) {
+					missileCount -= 2;
+					new Missile(BulletsMaster.BULLET_LABLE.PLAYER, new Vector3f(position.x, position.y, position.z-0.1f), new Vector3f(1f,-1,0), 20, 3);
+					new Missile(BulletsMaster.BULLET_LABLE.PLAYER, new Vector3f(position.x, position.y, position.z-0.1f), new Vector3f(-1f,-1,0), 20, 3);
+				}
+			}
+			
+			if(missileCount != missileMax) {
+				missileTimer += DisplayManager.getFrameTime();
+				if(missileTimer > 3) {
+					missileTimer = 0;
+					missileCount += 2;
+				}
+			}
+				
+			
 
 		}else {
 			DOWN_FLAG = false;
@@ -138,6 +168,7 @@ public class Player extends Entity{
 		super.setPosition(position);
 		super.setRotX(pitch);
 		super.setRotZ(roll + flyingNoiseCurrentRoll);
+		KEY_Z_FLAG = Keyboard.isKeyDown(Keyboard.KEY_Z);
 	}
 	
 	private void afterBurnerEffect() {
@@ -162,50 +193,43 @@ public class Player extends Entity{
 	
 	public void move() {
 			if(PLAY_MODE == 0) {
-				if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_UP))
 					UP_FLAG = true;
-				}
-				else if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-					DOWN_FLAG = true;
-				}
-				else {
-					DOWN_FLAG = false;
+				else 
 					UP_FLAG = false;
-				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+					DOWN_FLAG = true;
+				else 
+					DOWN_FLAG = false;
+
+				if(Keyboard.isKeyDown(Keyboard.KEY_LEFT))
 					LEFT_FLAG = true;
-				}
-				else if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-					RIGHT_FLAG = true;
-				}
-				else {
+				else 
 					LEFT_FLAG = false;
+				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+					RIGHT_FLAG = true;
+				else			
 					RIGHT_FLAG = false;
-				}
 				smoothMove_BottomView();
 			}
 			
 			if(PLAY_MODE == 1) {
-				if(Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_UP)) 
 					FORWARD_FLAG = true;
-				}
-				else if(Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-					BACKWARD_FLAG = true;
-				}
-				else {
-					BACKWARD_FLAG = false;
+				else 
 					FORWARD_FLAG = false;
-				}
-				if(Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+				if(Keyboard.isKeyDown(Keyboard.KEY_DOWN))
+					BACKWARD_FLAG = true;
+				else
+					BACKWARD_FLAG = false;
+				if(Keyboard.isKeyDown(Keyboard.KEY_LEFT))
 					LEFT_FLAG = true;
-				}
-				else if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-					RIGHT_FLAG = true;
-				}
-				else {
+				else 
 					LEFT_FLAG = false;
+				if(Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
+					RIGHT_FLAG = true;
+				else	
 					RIGHT_FLAG = false;
-				}
 				smoothMove_TopView();
 			} 
 	}
@@ -216,7 +240,7 @@ public class Player extends Entity{
 			if(position.getY() > -bottomViewHeight/2)
 				position.setY(position.getY() - BOTTOM_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
-		else if(UP_FLAG) {
+		if(UP_FLAG) {
 			if(position.getY() < bottomViewHeight/2)
 				position.setY(position.getY() + BOTTOM_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
@@ -226,7 +250,7 @@ public class Player extends Entity{
 			if(position.getX() > -bottomViewWidth/2)
 				position.setX(position.getX() - BOTTOM_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
-		else if(RIGHT_FLAG) {
+		if(RIGHT_FLAG) {
 			if(position.getX() < bottomViewWidth/2)
 				position.setX(position.getX() + BOTTOM_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
@@ -238,7 +262,7 @@ public class Player extends Entity{
 			if(position.getZ() < topViewHeight/2)
 				position.setZ(position.getZ() + TOP_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
-		else if(FORWARD_FLAG) {
+		if(FORWARD_FLAG) {
 			if(position.getZ() > -topViewHeight/2)
 				position.setZ(position.getZ() - TOP_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
@@ -248,7 +272,7 @@ public class Player extends Entity{
 			if(position.getX() > -topViewWidth/2)
 				position.setX(position.getX() - TOP_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
-		else if(RIGHT_FLAG) {
+		if(RIGHT_FLAG) {
 			if(position.getX() < topViewWidth/2)
 				position.setX(position.getX() + TOP_MOVE_SPEED*DisplayManager.getFrameTime());
 		}
@@ -357,6 +381,13 @@ public class Player extends Entity{
 	public void setGodMode(boolean godMode) {
 		this.godMode = godMode;
 	}
+
+	public float getMissileCount() {
+		return missileCount;
+	}
+
+	
+	
 	
 	
 	

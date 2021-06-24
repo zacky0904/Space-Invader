@@ -3,13 +3,12 @@ package enemy;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
-import bullet.Bullet;
+import bullet.PlasmaBall;
 import bullet.BulletsMaster.BULLET_LABLE;
-import bullet.BulletsMaster.BULLET_TYPE;
 import load.LoadMaster;
 import renderEngine.DisplayManager;
 
-public class Enemy1 extends Enemy implements EnemyInterface{
+public class Enemy1 extends Enemy{
 	
 	private float elapsed = 0;
 	
@@ -48,7 +47,7 @@ public class Enemy1 extends Enemy implements EnemyInterface{
 			
 			elapsed += DisplayManager.getFrameTime();
 			if(elapsed >= 2) {
-				new Bullet(BULLET_LABLE.ENEMY, BULLET_TYPE.FIRE_BALL, new Vector3f(super.getPosition()), new Vector3f(0,0,1),6, 6);
+				new PlasmaBall(BULLET_LABLE.ENEMY, new Vector3f(super.getPosition()), new Vector3f(0,0,1),6, 6);
 				elapsed = 0;
 			}
 			
@@ -80,11 +79,6 @@ public class Enemy1 extends Enemy implements EnemyInterface{
 				super.setRotZ(super.getRotZ()+dRoll*DisplayManager.getFrameTime());
 				
 		}
-	}
-
-	@Override
-	public Enemy getEnemyClass() {
-		return this;
 	}
 
 }

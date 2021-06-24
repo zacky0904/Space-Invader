@@ -38,7 +38,7 @@ public class ParticleSystem_Explode {
 			Vector3f velocityVec = new Vector3f((float) (Math.random()-0.5),(float) (Math.random()-0.5),(float) (Math.random()-0.5));
 			velocityVec.normalise();
 			velocityVec.scale(speed);
-			new Particle(new Vector3f(systemCenter), velocityVec, 0, lifeLength, 0, 4f, 0,colour);
+			new Particle(new Vector3f(systemCenter), velocityVec, 0, lifeLength, 0, 2f, 0,colour);
 		}
 	}
 	
