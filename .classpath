@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Space-Invader/lib/natives"/>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lwjgl_util.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/lwjgl.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/slick-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jars/PNGDecoder.jar"/>
+	<classpathentry kind="src" path="res"/>
+	<classpathentry kind="src" path="lib"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

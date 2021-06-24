@@ -1,0 +1,11 @@
+#version 400
+
+in vec3 textureCoords;
+out vec4 out_Color;
+
+uniform samplerCube cubeMap;
+
+void main(void){
+	//applica la texture del cielo al cubo
+    out_Color = texture(cubeMap, textureCoords);
+}
